@@ -161,7 +161,7 @@ const Storage = {
     // Initialize settings if not exists
     if (!this.get(this.KEYS.SETTINGS)) {
       const defaultSettings = {
-        currency: "USD",
+        currency: "INR",
         dateFormat: "MMM DD, YYYY",
         firstDayOfWeek: "sunday",
         theme: "light",

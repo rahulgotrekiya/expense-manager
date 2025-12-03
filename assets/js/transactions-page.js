@@ -24,14 +24,26 @@ const TransactionsPage = {
 
   // Attach event listeners
   attachEventListeners() {
-    // Filter pills
+    // Filter pills - FIXED: Using correct period keys
     document.querySelectorAll(".filter-pill").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         document
           .querySelectorAll(".filter-pill")
           .forEach((b) => b.classList.remove("active"));
         e.target.classList.add("active");
-        this.currentFilters.period = e.target.dataset.period;
+
+        // Map data-period to correct period keys
+        const periodMap = {
+          all: "all",
+          "7days": "last7Days",
+          thisMonth: "thisMonth",
+          lastMonth: "lastMonth",
+        };
+
+        this.currentFilters.period =
+          periodMap[e.target.dataset.period] || e.target.dataset.period;
+        this.currentPage = 1;
+        this.loadTransactions();
       });
     });
 
@@ -43,6 +55,8 @@ const TransactionsPage = {
           .forEach((b) => b.classList.remove("active"));
         e.target.classList.add("active");
         this.currentFilters.type = e.target.dataset.type;
+        this.currentPage = 1;
+        this.loadTransactions();
       });
     });
 
@@ -317,16 +331,20 @@ const TransactionsPage = {
   confirmDelete(id) {
     this.transactionToDelete = id;
     document.getElementById("deleteModal").classList.add("active");
+    document.body.style.overflow = "hidden";
   },
 
   // Close delete modal
   closeDeleteModal() {
     this.transactionToDelete = null;
     document.getElementById("deleteModal").classList.remove("active");
+    document.body.style.overflow = "";
   },
 };
 
 // Initialize when DOM is loaded
 if (document.getElementById("transactionsTableBody")) {
-  TransactionsPage.init();
+  document.addEventListener("DOMContentLoaded", () => {
+    TransactionsPage.init();
+  });
 }
